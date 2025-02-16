@@ -21,4 +21,4 @@ Once the game is no longer detected, it will delete every file in the given fold
 3a. Add initial check to see if user wants to create a new game profile.  
 
 ## Dependencies not included with Python
-psutil
+[psutil](https://github.com/giampaolo/psutil)
