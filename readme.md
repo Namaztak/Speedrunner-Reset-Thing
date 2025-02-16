@@ -10,3 +10,5 @@ After all 3 of those steps are complete, it will check every second for whether 
 Once the game is running, it'll recheck every second to see that it's still running, and continue to do nothing but spam "game is still running" in the console.
 
 Once the game is no longer detected, it will delete every file in the given folder, except any files submitted in step 3.
+
+TODO: Make it check that it actually can delete the files, and if not, tell the user to change the folder permissions.
