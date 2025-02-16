@@ -4,7 +4,7 @@ import time
 import tkinter as tk
 from tkinter import filedialog
 import random
-
+#dongs
 # Dictionary that stores game exe as key and list of files to not delete as value
 games_n_files = {}
 
