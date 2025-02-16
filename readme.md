@@ -1,4 +1,4 @@
-What it do?
+#What it do?
 
 For now, just a simple python script for speedrunners playing games that need their saves deleted between runs, that asks the following:
 1. What game are you running? (Locate the exe)
@@ -11,11 +11,14 @@ Once the game is running, it'll recheck every second to see that it's still runn
 
 Once the game is no longer detected, it will delete every file in the given folder, except any files submitted in step 3.
 
-TODO: 
+##TODO: 
 
-1. Make it check that it actually can delete the files, and if not, tell the user to change the folder permissions.
-2. Make it ask if we're doing another run (y/n), kill itself if not.
-2a. Option not to delete saves if not.
-2b. If yes, relaunch the game immediately.
-3. Actually save the submitted info between sittings.
-3a. Add initial check to see if user wants to create a new game profile.
+1. Make it check that it actually can delete the files, and if not, tell the user to change the folder permissions.  
+2. Make it ask if we're doing another run (y/n), kill itself if not.  
+2a. Option not to delete saves if not.  
+2b. If yes, relaunch the game immediately.  
+3. Actually save the submitted info between sittings.  
+3a. Add initial check to see if user wants to create a new game profile.  
+
+##Dependencies not included with Python
+psutil
