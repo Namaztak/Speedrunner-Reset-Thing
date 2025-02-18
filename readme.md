@@ -14,6 +14,7 @@ Once the game is no longer detected, it will delete every file in the given fold
 ## TODO: 
 
 1. Make it check that it actually can delete the files, and if not, tell the user to change the folder permissions.  
+1a. ~~Make it so empty selections in the first step do not add to config, and do not cause crashes.~~  
 2. Make it ask if we're doing another run (y/n), kill itself if not.  
 2a. Option not to delete saves if not.  
 2b. If yes, relaunch the game immediately.  
