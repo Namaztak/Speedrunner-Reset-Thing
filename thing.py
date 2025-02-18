@@ -3,7 +3,7 @@ import psutil
 import time
 import tkinter as tk
 from tkinter import filedialog
-import random
+import random # For random messages to not be boring about the console spam every second
 import configparser
 
 
@@ -16,6 +16,9 @@ def add_game_exe_to_dict():
     root = tk.Tk()
     root.withdraw()  # hide the Tkinter window
     exe_path = filedialog.askopenfilename()
+    if exe_path == "":
+        print("No exe selected, exiting")
+        exit()
     exe_name = os.path.basename(exe_path)
     print(f"Selected: {exe_path}")
     return exe_name
@@ -26,7 +29,7 @@ def check_perms(folder_path):
         #Make a tkinter dialogue to tell the user to fix permissions of that folder
         root = tk.Tk()
         root.withdraw()  # hide the Tkinter window
-        tk.messagebox.showwarning("Error", "Before going any further, make sure the folder you selected has write permissions. If you don't know how to fix this, please check out the readme.")
+        tk.messagebox.showwarning("Heads up!", "Before going any further, make sure the folder you selected has write permissions. If you don't know how to fix this, please YouTube a tutorial. Also maybe don't run random things you find on GitHub?")
     else:
         print("Sick. No permissions issues.")
         return True
@@ -37,6 +40,9 @@ def get_save_path():
     root = tk.Tk()
     root.withdraw()  # hide the Tkinter window
     folder_path = filedialog.askdirectory()
+    if folder_path == "":
+        print("No folder selected. Closing. Run again when you're ready.")
+        exit()
     check_perms(folder_path)
     return folder_path
 
@@ -46,6 +52,9 @@ def add_keep_files_to_dict():
     root = tk.Tk()
     root.withdraw()  # hide the Tkinter window
     file_paths = filedialog.askopenfilenames()
+    if file_paths == "":
+        print("All is fair game in there, I guess. Your funeral.")
+        return []
     for file in file_paths:
         file = os.path.basename(file)
     return file_paths
@@ -142,7 +151,7 @@ def main():
         # Ask using a tkinter dialog yes/no box
         root = tk.Tk()
         root.withdraw()  # hide the Tkinter window
-        answer = tk.messagebox.askyesno("Do you want to run a game that you've already set up?")
+        answer = tk.messagebox.askyesno("First Check","Do you want to run a game that you've already set up?")
         if answer == True:
             get_games()
         else:
