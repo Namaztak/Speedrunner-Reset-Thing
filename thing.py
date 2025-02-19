@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import filedialog
 import random # For random messages to not be boring about the console spam every second
 import configparser
+import shutil
 
 
 # Dictionary that stores game exe as key and list of files to not delete as value
@@ -79,6 +80,13 @@ def add_to_config():
     # write the changes to the config file
     with open('games.cfg', 'w') as configfile:
         config.write(configfile)
+
+    # Zip the current contents of the save folder and save it in this script's directory
+    zip_name = game_exe.strip(".exe") + "_backup"
+    #copy contents of save folder to current directory
+    shutil.copytree(save_path, zip_name)
+    print("Just in case, I backed up your existing saves to a folder in this script's directory. If you want to restore them, they're in here now.")
+    
 
     print("Config saved to games.cfg")
 
