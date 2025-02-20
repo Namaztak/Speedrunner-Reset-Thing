@@ -14,8 +14,6 @@ games_n_files = {}
 # Function that prompts user to select game exe
 def add_game_exe_to_dict():
     print("Select game exe")
-    root = tk.Tk()
-    root.withdraw()  # hide the Tkinter window
     exe_path = filedialog.askopenfilename()
     if exe_path == "":
         print("No exe selected, exiting")
@@ -28,8 +26,6 @@ def add_game_exe_to_dict():
 def check_perms(folder_path):
     if not os.access(folder_path, os.W_OK):
         #Make a tkinter dialogue to tell the user to fix permissions of that folder
-        root = tk.Tk()
-        root.withdraw()  # hide the Tkinter window
         tk.messagebox.showwarning("Heads up!", "Before going any further, make sure the folder you selected has write permissions. If you don't know how to fix this, please YouTube a tutorial. Also maybe don't run random things you find on GitHub?")
     else:
         print("Sick. No permissions issues.")
@@ -38,8 +34,6 @@ def check_perms(folder_path):
 # Function that prompts user to select where saves are stored
 def get_save_path():
     print("Select save folder")
-    root = tk.Tk()
-    root.withdraw()  # hide the Tkinter window
     folder_path = filedialog.askdirectory()
     if folder_path == "":
         print("No folder selected. Closing. Run again when you're ready.")
@@ -50,8 +44,6 @@ def get_save_path():
 # Function that prompts user to select any files to keep safe
 def add_keep_files_to_dict():
     print("Select any files to keep safe")
-    root = tk.Tk()
-    root.withdraw()  # hide the Tkinter window
     file_paths = filedialog.askopenfilenames()
     if file_paths == "":
         print("All is fair game in there, I guess. Your funeral.")
@@ -98,6 +90,29 @@ def delete_stuff_rev2(game):
         if file not in keep_files and not os.path.isdir(os.path.join(save_path, file)):
             file_path = os.path.join(save_path, file)
             os.remove(file_path)
+    # Ask user if they want to do another run
+    root = tk.Tk()
+    root.iconify()
+    root.attributes("-topmost", True)
+    root.focus_set()  # minimize the window instead of withdrawing it
+    answer = tk.messagebox.askyesno("Another run?", "Doing another run?")
+    if answer == True:
+        pass
+    else:
+        # ask if they want to restore the original saves
+        answer = tk.messagebox.askyesno("Restore saves?", "Do you want to restore your original saves?")
+        if answer == True:
+            restore_saves(game)
+            print("Saves restored! Peace!")
+            exit()
+        else:
+            exit()
+
+# Function to put the original saves back in the save folder
+def restore_saves(game):
+    save_path = games_n_files[game][0]
+    backup_path = game.strip(".exe") + "_backup"
+    shutil.copytree(backup_path, save_path, dirs_exist_ok=True)
 
 # Check every second to see if game is running, game is a string, pulled from config file
 def is_running():
@@ -155,17 +170,14 @@ def main():
         add_to_config()
         get_games()
     else:
-        # Ask player if they're running a game they've already set up, y/n
-        # Ask using a tkinter dialog yes/no box
-        root = tk.Tk()
-        root.withdraw()  # hide the Tkinter window
         answer = tk.messagebox.askyesno("First Check","Do you want to run a game that you've already set up?")
         if answer == True:
             get_games()
         else:
             add_to_config()
             get_games()
-    while True:
+    another = True
+    while another:
         game = is_running()
         is_not_running(game)
         delete_stuff_rev2(game)
