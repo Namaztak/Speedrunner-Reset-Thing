@@ -22,6 +22,7 @@ Once the game is no longer detected, it will delete every file in the given fold
 2. ~~Make it ask if we're doing another run (y/n), kill itself if not.~~  
 2a. Option not to delete saves if not.  
 2b. If yes, relaunch the game immediately.  
+2c. It does that, but it's really ugly. 
 3. ~~Actually save the submitted info between sittings.~~  
 3a. ~~Add initial check to see if user wants to create a new game profile.~~  
 3b. ~~Fix initial run after adding a profile, currently does not detect the new game until the script starts over.~~  
@@ -32,3 +33,4 @@ Once the game is no longer detected, it will delete every file in the given fold
 
 ## Dependencies not included with Python
 [psutil](https://github.com/giampaolo/psutil)
+[pyautogui](https://github.com/asweigart/pyautogui)

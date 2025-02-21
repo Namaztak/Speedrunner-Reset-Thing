@@ -6,6 +6,7 @@ from tkinter import filedialog
 import random # For random messages to not be boring about the console spam every second
 import configparser
 import shutil
+import pyautogui
 
 
 # Dictionary that stores game exe as key and list of files to not delete as value
@@ -20,13 +21,14 @@ def add_game_exe_to_dict():
         exit()
     exe_name = os.path.basename(exe_path)
     print(f"Selected: {exe_path}")
-    return exe_name
+    return [exe_name, exe_path]
 
 # Function to check folder permissions
 def check_perms(folder_path):
     if not os.access(folder_path, os.W_OK):
         #Make a tkinter dialogue to tell the user to fix permissions of that folder
-        tk.messagebox.showwarning("Heads up!", "Before going any further, make sure the folder you selected has write permissions. If you don't know how to fix this, please YouTube a tutorial. Also maybe don't run random things you find on GitHub?")
+        tk.messagebox.showwarning("Heads up!", "Before going any further, make sure the folder you selected has write permissions. If you don't know how to fix this, please YouTube a tutorial. Also maybe don't run random things you find on GitHub? Run this again once you've done that. Closing for now.")
+        exit()
     else:
         print("Sick. No permissions issues.")
         return True
@@ -57,7 +59,9 @@ def add_to_config():
     config = configparser.ConfigParser()
     config.read('games.cfg')  # read existing config file
 
-    game_exe = add_game_exe_to_dict()
+    game_info_base = add_game_exe_to_dict()
+    game_exe = game_info_base[0]
+    game_path = game_info_base[1]
     save_path = get_save_path()
     keep_files = add_keep_files_to_dict()
 
@@ -67,6 +71,7 @@ def add_to_config():
 
     # set the values in the config file
     config.set(game_exe, 'save_path', save_path)
+    config.set(game_exe, 'game_path', game_path)
     config.set(game_exe, 'keep_files', ','.join(keep_files))  # store as comma-separated list
 
     # write the changes to the config file
@@ -97,7 +102,14 @@ def delete_stuff_rev2(game):
     root.focus_set()  # minimize the window instead of withdrawing it
     answer = tk.messagebox.askyesno("Another run?", "Doing another run?")
     if answer == True:
-        pass
+        # relaunch the game
+        print("Relaunching game...")
+        root.destroy()
+        print(f"Launching game: {games_n_files[game][2]}")
+        pyautogui.hotkey('win', 'r')
+        time.sleep(1)
+        pyautogui.typewrite(games_n_files[game][2])
+        pyautogui.press('enter')
     else:
         # ask if they want to restore the original saves
         answer = tk.messagebox.askyesno("Restore saves?", "Do you want to restore your original saves?")
@@ -137,8 +149,9 @@ def get_games():
     config.read('games.cfg')
     for game in config.sections():
         save_path = config.get(game, 'save_path')
+        game_path = config.get(game, 'game_path')
         keep_files = config.get(game, 'keep_files').split(',')
-        games_n_files[game] = [save_path, keep_files]
+        games_n_files[game] = [save_path, keep_files, game_path]
     check_perms(save_path)
 
 
@@ -176,8 +189,7 @@ def main():
         else:
             add_to_config()
             get_games()
-    another = True
-    while another:
+    while True:
         game = is_running()
         is_not_running(game)
         delete_stuff_rev2(game)
