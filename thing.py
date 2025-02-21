@@ -7,6 +7,7 @@ import random # For random messages to not be boring about the console spam ever
 import configparser
 import shutil
 import pyautogui
+from halo import Halo
 
 
 # Dictionary that stores game exe as key and list of files to not delete as value
@@ -97,15 +98,14 @@ def delete_stuff_rev2(game):
             os.remove(file_path)
     # Ask user if they want to do another run
     root = tk.Tk()
-    root.iconify()
+    root.withdraw()
     root.attributes("-topmost", True)
     root.focus_set()  # minimize the window instead of withdrawing it
     answer = tk.messagebox.askyesno("Another run?", "Doing another run?")
     if answer == True:
         # relaunch the game
-        print("Relaunching game...")
+        print(f"Relaunching {game.strip('.exe')}...")
         root.destroy()
-        print(f"Launching game: {games_n_files[game][2]}")
         pyautogui.hotkey('win', 'r')
         time.sleep(1)
         pyautogui.typewrite(games_n_files[game][2])
@@ -118,6 +118,7 @@ def delete_stuff_rev2(game):
             print("Saves restored! Peace!")
             exit()
         else:
+            print("Later. Hey, maybe donate to me if this is useful to you?")
             exit()
 
 # Function to put the original saves back in the save folder
@@ -128,20 +129,20 @@ def restore_saves(game):
 
 # Check every second to see if game is running, game is a string, pulled from config file
 def is_running():
-    running = False
-    while running == False:
-        print("Game is not running, checking again in 1 second")
-        time.sleep(1)
-        progs = psutil.process_iter()
-        for prog in progs:
-            try:
-                if prog.name() in games_n_files:
-                    running = True
-                    game = prog.name()
-            except psutil.NoSuchProcess:
-                pass  # skip terminated processes
-    print(f"{game} detected, have fun!")
-    return game
+    with Halo(text="Checking every second for games you've set up", spinner = "shark", text_color='magenta') as spinner:
+        running = False
+        while running == False:
+            time.sleep(1)
+            progs = psutil.process_iter()
+            for prog in progs:
+                try:
+                    if prog.name() in games_n_files:
+                        running = True
+                        game = prog.name()
+                except psutil.NoSuchProcess:
+                    pass  # skip terminated processes
+        spinner.succeed(f"{game.strip(".exe")} detected, have fun!")
+        return game
 
 # Get games that are already set up in games.cfg
 def get_games():
@@ -156,22 +157,22 @@ def get_games():
 
 
 # Check every second to see if game is not running
+
 def is_not_running(game):
-    running = True
-    while running == True:
-        print("Game is still running, checking again every second")
-        time.sleep(1)
-        progs = psutil.process_iter()
-        for prog in progs:
-            try:
-                if prog.name() == game:
-                    running = True
-                    break
-            except psutil.NoSuchProcess:
-                pass
-        else:
-            running = False
-            print("Game is not running, deleting saves, get back in it!")
+    with Halo(text=f"Checking every second to see if {game.strip('.exe')} is still running", spinner = "shark", text_color='magenta') as spinner:
+        running = True
+        while running == True:
+            time.sleep(1)
+            progs = psutil.process_iter()
+            for prog in progs:
+                try:
+                    if prog.name() == game:
+                        break
+                except psutil.NoSuchProcess:
+                    pass
+            else:
+                running = False
+                spinner.fail(f"{game.strip('.exe')} no longer running. Deleting saves. Get back in it!")
 
 # Main function
 def main():

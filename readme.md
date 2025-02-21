@@ -7,9 +7,9 @@ For now, just a simple python script for speedrunners playing games that need th
 
 Make sure you have that game's cloud saves turned off in Steam (or whatever other launcher it uses, if it does at all) if you didn't already, otherwise this thing is just gonna make it so Steam has to redownload your most recent cloud save every time, and effectively do nothing.
 
-After all 3 of those steps are complete, it will check every second for whether the game is running, and do nothing but spam up the terminal until it is.
+After all 3 of those steps are complete, it will check every second for whether the game is running, and do nothing but ~~spam up the terminal~~ until it is. Hey, no more terminal spam, I use Halo spinners instead now!
 
-Once the game is running, it'll recheck every second to see that it's still running, and continue to do nothing but spam "game is still running" in the console.
+Once the game is running, it'll recheck every second to see that it's still running, and continue to do nothing but ~~spam "game is still running"~~ show a Halo spinner in the console.
 
 Once the game is no longer detected, it will delete every file in the given folder, except any files submitted in step 3.
 
@@ -34,3 +34,4 @@ Once the game is no longer detected, it will delete every file in the given fold
 ## Dependencies not included with Python
 [psutil](https://github.com/giampaolo/psutil)
 [pyautogui](https://github.com/asweigart/pyautogui)
+[Halo](https://github.com/manrajgrover/halo)
