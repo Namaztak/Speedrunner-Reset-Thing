@@ -1,4 +1,12 @@
-# What it do?
+# How to run:
+
+0. Have Python installed such that you can do "python --version" in your terminal/command line interface of choice, and actually get a version returned to you. My machine uses Python 3.13, and so does my only QA tester so far. It works on both of our machines.  
+
+1. Go up top, hit that green code dropdown, hit download zip, and extract that zip to its own folder somewhere you won't forget.  
+2. Run init.bat and it should grab everything it needs automatically.  
+3. See next section, as it should then run the main script. You can just run init.bat every time, if you don't feel like running it from the command line.  
+
+# What is this for?
 
 For now, just a simple python script for speedrunners playing games that need their saves deleted between runs, that asks the following:
 1. What game are you running? (Locate the exe)
@@ -36,3 +44,6 @@ Once the game is no longer detected, it will delete every file in the given fold
 [psutil](https://github.com/giampaolo/psutil)
 [pyautogui](https://github.com/asweigart/pyautogui)
 [Halo](https://github.com/manrajgrover/halo)
+
+### Weird known fringe cases:  
+* SM64EX, at least specifically the [Archipelago](https://archipelago.gg/) version, doesn't seem to close itself properly, so instead of selecting the exe for your existing build, set it up with the SM64AP launcher exe instead.
