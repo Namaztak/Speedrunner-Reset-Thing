@@ -9,3 +9,5 @@ if %errorlevel% neq 0 (
 
 :: Install requirements
 pip install -r requirements.txt
+
+python thing.py
