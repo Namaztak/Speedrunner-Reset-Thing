@@ -19,7 +19,9 @@ After all 3 of those steps are complete, it will check every second for whether 
 
 Once the game is running, it'll recheck every second to see that it's still running, and continue to do nothing but ~~spam "game is still running"~~ show a Halo spinner in the console.
 
-Once the game is no longer detected, it will delete every file in the given folder, except any files submitted in step 3.
+Once the game is no longer detected, it will delete every file in the given folder, except any files submitted in step 3. 
+
+Finally, it will ask if you're doing another run. If yes, it'll immediately re-launch the exe you chose in step 1. If no, it'll ask if you want to restore the saves it quietly backed up when you first set up the config for that game. If yes, it does that, and if no, it'll just exit.
 
 ## TODO: 
 
@@ -41,8 +43,15 @@ Once the game is no longer detected, it will delete every file in the given fold
 6. "Floor it!" mode. (Only initial interaction needed, then automate everything to yes cause we're grinding runs like crazy.)
 
 ## Dependencies not included with Python
+Again, init.bat should grab these for you, but in case you wanna look further into what I used for this, here you go:
+
 [psutil](https://github.com/giampaolo/psutil)  
 [Halo](https://github.com/manrajgrover/halo)
 
 ### Weird known fringe cases:  
 * SM64EX, at least specifically the [Archipelago](https://archipelago.gg/) version, doesn't seem to close itself properly, so instead of selecting the exe for your existing build, set it up with the SM64AP launcher exe instead.
+
+#### Donate?  
+I'm not gonna give you anything special if you do, but I'm not a fan of paywalling things if you can't, so only donate if you actually want to just give me money.
+
+[Ko-fi link here](https://ko-fi.com/nam_137)
