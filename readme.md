@@ -41,8 +41,7 @@ Once the game is no longer detected, it will delete every file in the given fold
 6. "Floor it!" mode. (Only initial interaction needed, then automate everything to yes cause we're grinding runs like crazy.)
 
 ## Dependencies not included with Python
-[psutil](https://github.com/giampaolo/psutil)
-[pyautogui](https://github.com/asweigart/pyautogui)
+[psutil](https://github.com/giampaolo/psutil)  
 [Halo](https://github.com/manrajgrover/halo)
 
 ### Weird known fringe cases:  
