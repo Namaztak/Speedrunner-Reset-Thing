@@ -11,6 +11,18 @@ from halo import Halo
 
 # Dictionary that stores game exe as key and list of files to not delete as value
 games_n_files = {}
+floor_it = False
+
+# Floor it? (automatically confirm everything for this session)
+def floor_it():
+    global floor_it
+    answer = tk.messagebox.askyesno("Floor it?", "Floor it?")
+    if answer == True:
+        print("OKAY! FLOOR IT!")
+        floor_it = True
+    else:
+        pass
+
 
 # Function that prompts user to select game exe
 def add_game_exe_to_dict():
@@ -96,26 +108,31 @@ def delete_stuff_rev2(game):
             file_path = os.path.join(save_path, file)
             os.remove(file_path)
     # Ask user if they want to do another run
-    root = tk.Tk()
-    root.withdraw()
-    root.attributes("-topmost", True)
-    root.focus_set()
-    answer = tk.messagebox.askyesno("Another run?", "Doing another run?")
-    if answer == True:
-        # relaunch the game
-        print(f"Relaunching {game.strip('.exe')}. GLHF!")
-        os.startfile(game)
-        root.destroy()
-    else:
-        # ask if they want to restore the original saves
-        answer = tk.messagebox.askyesno("Restore saves?", "Do you want to restore your original saves?")
+    if not floor_it:
+        root = tk.Tk()
+        root.withdraw()
+        root.attributes("-topmost", True)
+        root.focus_set()
+        answer = tk.messagebox.askyesno("Another run?", "Doing another run?")
         if answer == True:
-            restore_saves(game)
-            print("Saves restored! Peace!")
-            exit()
+            # relaunch the game
+            print(f"Relaunching {game.strip('.exe')}. GLHF!")
+            os.startfile(game)
+            root.destroy()
         else:
-            print("Later. Hey, maybe donate to me if this is useful to you? Go to nam.rip")
-            exit()
+            # ask if they want to restore the original saves
+            answer = tk.messagebox.askyesno("Restore saves?", "Do you want to restore your original saves?")
+            if answer == True:
+                restore_saves(game)
+                print("Saves restored! Peace!")
+                exit()
+            else:
+                print("Later. Hey, maybe donate to me if this is useful to you? Go to nam.rip")
+                exit()
+    else:
+        # relaunch the game
+            print(f"GET BACK AT IT! {game.strip('.exe').upper()} COMING RIGHT BACK UP! GLOD SPLITS INCOMING!!!")
+            os.startfile(game)
 
 # Function to put the original saves back in the save folder
 def restore_saves(game):
@@ -169,7 +186,6 @@ def is_not_running(game):
             else:
                 running = False
                 spinner.fail(f"{game.strip('.exe')} no longer running. Deleting saves. Get back in it!")
-
 # Main function
 def main():
     config = configparser.ConfigParser()
@@ -179,17 +195,19 @@ def main():
         print("First time? Let's create a config file")
         add_to_config()
         get_games()
-    else:
+    floor_it()
+    if not floor_it:
         answer = tk.messagebox.askyesno("First Check","Do you want to run a game that you've already set up?")
         if answer == True:
             get_games()
         else:
             add_to_config()
             get_games()
+    else:
+        get_games()
     while True:
         game = is_running()
         os.chdir(games_n_files[game][2].strip(f"{game}"))
-        print(os.getcwd())
         is_not_running(game)
         delete_stuff_rev2(game)
 

@@ -25,6 +25,11 @@ Once the game is no longer detected, it will immediately delete every file in th
 
 Finally, it will ask if you're doing another run. If yes, it'll immediately re-launch the exe you chose in step 1. If no, it'll ask if you want to restore the saves it quietly backed up when you first set up the config for that game. If yes, it does that, and if no, it'll just exit.
 
+# Floor it?  
+If you have at least one game set up, it'll ask you on launch whether you wanna floor it. If you say yes, it's a confirmation that you just wanna mindlessly mash out run after run, so it'll skip asking you, for that entire session, whether you want to relaunch the game, and whether you're gonna do another run. If you want your game to stop launching, you'll have to just kill the script, either by closing your terminal, or hitting Ctrl+C (Keyboard interrupt) in the terminal window.
+
+If you say no, it'll be a lot less aggressive.  
+
 ## TO DO: 
 
 1. ~~Make it check that it actually can delete the files, and if not, tell the user to change the folder permissions.~~  
@@ -42,7 +47,7 @@ Finally, it will ask if you're doing another run. If yes, it'll immediately re-l
 3d. Make it check for additional files repeatedly until none are selected, run the same permissions check on each folder/files. (really low priority, might not even do this unless someone shows me a specific game that'd need it)  
 4. Make an "Undertale mode" for any games that involve an intentional crash/quit during a run.  
 5. "Emulator mode" to allow a single program to be set up for multiple games' saves.  
-6. "Floor it!" mode. (Only initial interaction needed, then automate everything to yes cause we're grinding runs like crazy.)  
+6. ~~"Floor it!" mode. (Only initial interaction needed, then automate everything to yes cause we're grinding runs like crazy.)~~  
 7. Make a video showing what it should look like in practice.  
 8. Add check on first run to see if the user uses LiveSplit.  
 8a. Insult them if not (but disable any LiveSplit functionality)  
