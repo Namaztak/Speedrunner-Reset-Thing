@@ -43,7 +43,10 @@ Finally, it will ask if you're doing another run. If yes, it'll immediately re-l
 4. Make an "Undertale mode" for any games that involve an intentional crash/quit during a run.  
 5. "Emulator mode" to allow a single program to be set up for multiple games' saves.  
 6. "Floor it!" mode. (Only initial interaction needed, then automate everything to yes cause we're grinding runs like crazy.)  
-7. Make a video showing what it should look like in practice.
+7. Make a video showing what it should look like in practice.  
+8. Add check on first run to see if the user uses LiveSplit.  
+8a. Insult them if not (but disable any LiveSplit functionality)  
+8b. If yes, have them locate and assign their splits file for that game, so that can also be launched by this script.  
 
 ## Dependencies not included with Python
 Again, init.bat should grab these for you, but in case you wanna look further into what I used for this, here you go:
