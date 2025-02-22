@@ -6,6 +6,8 @@
 2. Run init.bat and it should grab everything it needs automatically.  
 3. See next section, as it should then run the main script. You can just run init.bat every time, if you don't feel like running it from the command line.  
 
+### Note: I've only tested this on Windows 10/11, so if you're on Linux/Mac, best of luck to you I guess.
+
 # What is this for?
 
 For now, just a simple python script for speedrunners playing games that need their saves deleted between runs, that asks the following:
