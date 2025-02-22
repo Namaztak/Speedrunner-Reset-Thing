@@ -6,7 +6,6 @@ from tkinter import filedialog
 import random # For random messages to not be boring about the console spam every second
 import configparser
 import shutil
-import pyautogui
 from halo import Halo
 
 
@@ -100,16 +99,13 @@ def delete_stuff_rev2(game):
     root = tk.Tk()
     root.withdraw()
     root.attributes("-topmost", True)
-    root.focus_set()  # minimize the window instead of withdrawing it
+    root.focus_set()
     answer = tk.messagebox.askyesno("Another run?", "Doing another run?")
     if answer == True:
         # relaunch the game
-        print(f"Relaunching {game.strip('.exe')}...")
+        print(f"Relaunching {game.strip('.exe')}. GLHF!")
+        os.startfile(game)
         root.destroy()
-        pyautogui.hotkey('win', 'r')
-        time.sleep(1)
-        pyautogui.typewrite(games_n_files[game][2])
-        pyautogui.press('enter')
     else:
         # ask if they want to restore the original saves
         answer = tk.messagebox.askyesno("Restore saves?", "Do you want to restore your original saves?")
@@ -118,7 +114,7 @@ def delete_stuff_rev2(game):
             print("Saves restored! Peace!")
             exit()
         else:
-            print("Later. Hey, maybe donate to me if this is useful to you?")
+            print("Later. Hey, maybe donate to me if this is useful to you? Go to nam.rip")
             exit()
 
 # Function to put the original saves back in the save folder
@@ -192,6 +188,8 @@ def main():
             get_games()
     while True:
         game = is_running()
+        os.chdir(games_n_files[game][2].strip(f"{game}"))
+        print(os.getcwd())
         is_not_running(game)
         delete_stuff_rev2(game)
 
