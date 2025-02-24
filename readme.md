@@ -41,19 +41,22 @@ TLDR: FLOOR IT TURNS ALT+F4 INTO A RESET BUTTON!
 2. ~~Make it ask if we're doing another run (y/n), kill itself if not.~~  
 2a. Option not to delete saves if not.  
 2b. ~~If yes, relaunch the game immediately.~~  
-2c. ~~It does that, but it's really ugly.~~ It's no longer ugly!
+2c. ~~It does that, but it's really ugly.~~ It's no longer ugly!  
 3. ~~Actually save the submitted info between sittings.~~  
 3a. ~~Add initial check to see if user wants to create a new game profile.~~  
 3b. ~~Fix initial run after adding a profile, currently does not detect the new game until the script starts over.~~  
 3c. ~~Make it ignore subfolders in the save directory~~  
 3d. Make it check for additional files repeatedly until none are selected, run the same permissions check on each folder/files. (really low priority, might not even do this unless someone shows me a specific game that'd need it)  
 4. Make an "Undertale mode" for any games that involve an intentional crash/quit during a run.  
+4a. Ask when setting up a game if there are any intentional crashes/exits in a normal run.  
+4b. If yes, ask how many, assign that to a variable, increment counter per-exit, auto-relaunch like "floor it", stop when counter > exits.  
 5. "Emulator mode" to allow a single program to be set up for multiple games' saves.  
 6. ~~"Floor it!" mode. (Only initial interaction needed, then automate everything to yes cause we're grinding runs like crazy.)~~  
 7. Make a video showing what it should look like in practice.  
 8. Add check on first run to see if the user uses LiveSplit.  
 8a. Insult them if not (but disable any LiveSplit functionality)  
 8b. If yes, have them locate and assign their splits file for that game, so that can also be launched by this script.  
+8c. MAYBE either figure out how to do the clean websocket interaction, or do an ungabunga pyautogui thing for timer resets.  
 
 ## Dependencies not included with Python
 Again, init.bat should grab these for you, but in case you wanna look further into what I used for this, here you go:

@@ -14,15 +14,58 @@ games_n_files = {}
 floor_it = False
 
 # Floor it? (automatically confirm everything for this session)
-def floor_it():
-    global floor_it
-    answer = tk.messagebox.askyesno("Floor it?", "Floor it?")
-    if answer == True:
-        print("OKAY! FLOOR IT!")
-        floor_it = True
-    else:
-        pass
+import tkinter as tk
 
+root = tk.Tk()
+root.withdraw()  # Hide the main window
+
+def floor_it(title, message, yes_label="Yes", no_label="No"):
+    result = [None]
+    dialog = tk.Toplevel()
+    dialog.title(title)
+
+    def yes():
+        result[0] = True
+        dialog.destroy()
+    def no():
+        result[0] = False
+        dialog.destroy()
+
+     # Add some padding around the edges of the dialog
+    frame = tk.Frame(dialog, padx=20, pady=20)
+    frame.pack(fill="both", expand=True)
+
+    # Create a label with the message, and add some padding around it
+    label = tk.Label(frame, text=message, wraplength=400)
+    label.pack(pady=10)
+
+    # Create a frame to hold the buttons, and add some padding around it
+    button_frame = tk.Frame(frame)
+    button_frame.pack(pady=10)
+
+    yes_button = tk.Button(dialog, text=yes_label, command=yes)
+    yes_button.pack(side=tk.LEFT, padx=10)
+
+    no_button = tk.Button(dialog, text=no_label, command=no)
+    no_button.pack(side=tk.LEFT, padx=10)
+
+    dialog.update_idletasks()
+    dialog.geometry("+%d+%d" % ((dialog.winfo_screenwidth() - dialog.winfo_reqwidth()) / 2,
+                                (dialog.winfo_screenheight() - dialog.winfo_reqheight()) / 2))
+
+    dialog.wait_window()
+    return result[0]
+
+def delete_stuff_floored(game):
+    save_path = games_n_files[game][0]
+    keep_files = [os.path.basename(file) for file in games_n_files[game][1]]
+    for file in os.listdir(save_path):
+        if file not in keep_files and not os.path.isdir(os.path.join(save_path, file)):
+            file_path = os.path.join(save_path, file)
+            os.remove(file_path)
+    print(f"GET BACK AT IT! {game.strip('.exe').upper()} COMING RIGHT BACK UP! {random.choice(floor_it_quotes).upper()}")
+    os.startfile(game)
+    
 
 # Function that prompts user to select game exe
 def add_game_exe_to_dict():
@@ -99,40 +142,39 @@ def add_to_config():
 
     print("Config saved to games.cfg")
 
-# Function that deletes saves
-def delete_stuff_rev2(game):
+def core_deletion(game):
     save_path = games_n_files[game][0]
     keep_files = [os.path.basename(file) for file in games_n_files[game][1]]
     for file in os.listdir(save_path):
         if file not in keep_files and not os.path.isdir(os.path.join(save_path, file)):
             file_path = os.path.join(save_path, file)
             os.remove(file_path)
+
+# Function that deletes saves
+def delete_stuff_rev2(game):
     # Ask user if they want to do another run
-    if not floor_it:
-        root = tk.Tk()
-        root.withdraw()
-        root.attributes("-topmost", True)
-        root.focus_set()
-        answer = tk.messagebox.askyesno("Another run?", "Doing another run?")
-        if answer == True:
-            # relaunch the game
-            print(f"Relaunching {game.strip('.exe')}. GLHF!")
-            os.startfile(game)
-            root.destroy()
-        else:
-            # ask if they want to restore the original saves
-            answer = tk.messagebox.askyesno("Restore saves?", "Do you want to restore your original saves?")
-            if answer == True:
-                restore_saves(game)
-                print("Saves restored! Peace!")
-                exit()
-            else:
-                print("Later. Hey, maybe donate to me if this is useful to you? Go to nam.rip")
-                exit()
-    else:
+    root = tk.Tk()
+    root.withdraw()
+    root.attributes("-topmost", True)
+    root.focus_set()
+    answer = tk.messagebox.askyesno("Another run?", "Doing another run?")
+    if answer == True:
+        core_deletion(game)
         # relaunch the game
-            print(f"GET BACK AT IT! {game.strip('.exe').upper()} COMING RIGHT BACK UP! {random.choice(floor_it_quotes).upper()}")
-            os.startfile(game)
+        print(f"Relaunching {game.strip('.exe')}. GLHF!")
+        os.startfile(game)
+        root.destroy()
+    else:
+        # ask if they want to restore the original saves
+        answer = tk.messagebox.askyesno("Restore saves?", "Do you want to restore your original saves?")
+        if answer == True:
+            core_deletion(game)
+            restore_saves(game)
+            print("Saves restored! Peace! Go check out nam.rip")
+            exit()
+        else:
+            print("Later. Hey, maybe donate to me if this is useful to you? Go to nam.rip")
+            exit()
 
 # Function to put the original saves back in the save folder
 def restore_saves(game):
@@ -165,12 +207,13 @@ def get_games():
         save_path = config.get(game, 'save_path')
         game_path = config.get(game, 'game_path')
         keep_files = config.get(game, 'keep_files').split(',')
+        #ut = config.get(game, 'ut_mode')
+        #emu = config.get(game, 'emu')
         games_n_files[game] = [save_path, keep_files, game_path]
     check_perms(save_path)
 
 
-# Check every second to see if game is not running
-
+# Check every second to see if game stopped running
 def is_not_running(game):
     with Halo(text=f"Checking every second to see if {game.strip('.exe')} is still running", spinner = "shark", text_color='magenta') as spinner:
         running = True
@@ -195,20 +238,21 @@ def main():
         print("First time? Let's create a config file")
         add_to_config()
         get_games()
-    floor_it()
-    if not floor_it:
-        answer = tk.messagebox.askyesno("First Check","Do you want to run a game that you've already set up?")
+    
+    if not floor_it("Floor it?", "FLOOR IT???", yes_label="FLOOR IT!", no_label="NO, DON'T FLOOR IT!"):
+        answer = tk.messagebox.askyesno("New game?","Do you want to run a game that you've already set up?")
         if answer == True:
             get_games()
         else:
             add_to_config()
             get_games()
-    else:
-        get_games()
     while True:
         game = is_running()
         os.chdir(games_n_files[game][2].strip(f"{game}"))
         is_not_running(game)
-        delete_stuff_rev2(game)
+        if floor_it:
+            delete_stuff_floored(game)
+        else:
+            delete_stuff_rev2(game)
 
 main()
