@@ -30,6 +30,8 @@ If you have at least one game set up, it'll ask you on launch whether you wanna 
 
 If you say no, it'll be a lot less aggressive.  
 
+TLDR: FLOOR IT TURNS ALT+F4 INTO A RESET BUTTON!
+
 ## TO DO: 
 
 1. ~~Make it check that it actually can delete the files, and if not, tell the user to change the folder permissions.~~  

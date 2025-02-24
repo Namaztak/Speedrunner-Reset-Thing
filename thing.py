@@ -7,7 +7,7 @@ import random # For random messages to not be boring about the console spam ever
 import configparser
 import shutil
 from halo import Halo
-
+from quotes_library import *
 
 # Dictionary that stores game exe as key and list of files to not delete as value
 games_n_files = {}
@@ -131,7 +131,7 @@ def delete_stuff_rev2(game):
                 exit()
     else:
         # relaunch the game
-            print(f"GET BACK AT IT! {game.strip('.exe').upper()} COMING RIGHT BACK UP! GLOD SPLITS INCOMING!!!")
+            print(f"GET BACK AT IT! {game.strip('.exe').upper()} COMING RIGHT BACK UP! {random.choice(floor_it_quotes).upper()}")
             os.startfile(game)
 
 # Function to put the original saves back in the save folder
