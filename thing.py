@@ -3,15 +3,20 @@ import psutil
 import time
 import tkinter as tk
 from tkinter import filedialog
-import random # For random messages to not be boring about the console spam every second
+from tkinter import ttk
+from tkinter import simpledialog
+import random # For random messages to not be boring about the console spam
 import configparser
 import shutil
 from halo import Halo
 from quotes_library import *
+import webbrowser
 
-# Dictionary that stores game exe as key and list of files to not delete as value
+# Dictionary that everything uses, floor it var, and undertale var
+
 games_n_files = {}
 floor_it = False
+ut_counter = 0
 
 # Floor it? (automatically confirm everything for this session)
 import tkinter as tk
@@ -19,7 +24,26 @@ import tkinter as tk
 root = tk.Tk()
 root.withdraw()  # Hide the main window
 
+# Ask user if their run contains any intentional crashes/quits
+def get_undertale_mode():
+    answer = floor_it(
+        "Undertale mode?", 
+        "Do your runs of this game involve any intentional crashes or exits?",
+        yes_label="Yes",
+        no_label="No"
+    )
+    if answer == True:
+        #open tkinter dialogue with a number input field
+        root = tk.Tk()
+        root.withdraw()  # Hide the root window
+        undertale = simpledialog.askinteger("Input", "Enter a number")
+        return str(undertale)
+    return "False"
+        
+        
+
 def floor_it(title, message, yes_label="Yes", no_label="No"):
+    global floor_it
     result = [None]
     dialog = tk.Toplevel()
     dialog.title(title)
@@ -54,6 +78,7 @@ def floor_it(title, message, yes_label="Yes", no_label="No"):
                                 (dialog.winfo_screenheight() - dialog.winfo_reqheight()) / 2))
 
     dialog.wait_window()
+    floor_it = result[0]
     return result[0]
 
 def delete_stuff_floored(game):
@@ -85,7 +110,7 @@ def check_perms(folder_path):
         tk.messagebox.showwarning("Heads up!", "Before going any further, make sure the folder you selected has write permissions. If you don't know how to fix this, please YouTube a tutorial. Also maybe don't run random things you find on GitHub? Run this again once you've done that. Closing for now.")
         exit()
     else:
-        print("Sick. No permissions issues.")
+        print(f"Sick. No permissions issues for {folder_path}.")
         return True
 
 # Function that prompts user to select where saves are stored
@@ -94,6 +119,10 @@ def get_save_path():
     folder_path = filedialog.askdirectory()
     if folder_path == "":
         print("No folder selected. Closing. Run again when you're ready.")
+        exit()
+    if "system32" in folder_path.lower():
+        #open url in default browser
+        webbrowser.open("https://www.youtube.com/watch?v=52tHsOk-Gy0")
         exit()
     check_perms(folder_path)
     return folder_path
@@ -119,6 +148,7 @@ def add_to_config():
     game_path = game_info_base[1]
     save_path = get_save_path()
     keep_files = add_keep_files_to_dict()
+    undertale = get_undertale_mode()
 
     # create a new section in the config file for the game
     if not config.has_section(game_exe):
@@ -128,6 +158,7 @@ def add_to_config():
     config.set(game_exe, 'save_path', save_path)
     config.set(game_exe, 'game_path', game_path)
     config.set(game_exe, 'keep_files', ','.join(keep_files))  # store as comma-separated list
+    config.set(game_exe, 'ut_mode', undertale)
 
     # write the changes to the config file
     with open('games.cfg', 'w') as configfile:
@@ -136,7 +167,7 @@ def add_to_config():
     # Zip the current contents of the save folder and save it in this script's directory
     zip_name = game_exe.strip(".exe") + "_backup"
     #copy contents of save folder to current directory
-    shutil.copytree(save_path, zip_name)
+    shutil.copytree(save_path, zip_name, dirs_exist_ok=True)
     print("Just in case, I backed up your existing saves to a folder in this script's directory. If you want to restore them, they're in here now.")
     
 
@@ -207,14 +238,19 @@ def get_games():
         save_path = config.get(game, 'save_path')
         game_path = config.get(game, 'game_path')
         keep_files = config.get(game, 'keep_files').split(',')
-        #ut = config.get(game, 'ut_mode')
-        #emu = config.get(game, 'emu')
-        games_n_files[game] = [save_path, keep_files, game_path]
-    check_perms(save_path)
+        undertale = config.get(game, 'ut_mode') #undertale mode var
+        games_n_files[game] = [
+            save_path,
+            keep_files,
+            game_path,
+            undertale
+            ]
+        check_perms(save_path)
 
 
 # Check every second to see if game stopped running
 def is_not_running(game):
+    global ut_counter
     with Halo(text=f"Checking every second to see if {game.strip('.exe')} is still running", spinner = "shark", text_color='magenta') as spinner:
         running = True
         while running == True:
@@ -228,31 +264,46 @@ def is_not_running(game):
                     pass
             else:
                 running = False
-                spinner.fail(f"{game.strip('.exe')} no longer running. Deleting saves. Get back in it!")
+                if games_n_files[game][3] != "False" and ut_counter < int(games_n_files[game][3]):
+                    spinner.fail(f"{game.strip('.exe')} no longer running. {int(games_n_files[game][3]) - ut_counter} exits remaining in the run. Relaunching {game.strip('.exe')}. You're doing great!")
+                else:
+                    spinner.fail(f"{game.strip('.exe')} no longer running. Deleting saves. Get back in it!")
 # Main function
 def main():
+    global ut_counter
     config = configparser.ConfigParser()
     config.read('games.cfg')
     # Check if games.cfg exists, or if it's empty
     if not os.path.exists('games.cfg') or os.stat('games.cfg').st_size == 0:
         print("First time? Let's create a config file")
         add_to_config()
-        get_games()
-    
+
     if not floor_it("Floor it?", "FLOOR IT???", yes_label="FLOOR IT!", no_label="NO, DON'T FLOOR IT!"):
-        answer = tk.messagebox.askyesno("New game?","Do you want to run a game that you've already set up?")
-        if answer == True:
-            get_games()
-        else:
+        answer = tk.messagebox.askyesno("New game?","Have you already set up the game you'll be running?")
+        if answer == False:
             add_to_config()
-            get_games()
+    get_games()
+    game = is_running()
+    os.chdir(games_n_files[game][2].strip(f"{game}"))
+    print(f"Now working in {games_n_files[game][2].strip(f"{game}")}")
     while True:
-        game = is_running()
-        os.chdir(games_n_files[game][2].strip(f"{game}"))
         is_not_running(game)
         if floor_it:
-            delete_stuff_floored(game)
+            if games_n_files[game][3] == "False" or ut_counter < int(games_n_files[game][3]):
+                delete_stuff_floored(game)
+            elif ut_counter >= int(games_n_files[game][3]):
+                delete_stuff_floored(game)
+                ut_counter = 0
+        
+            
         else:
-            delete_stuff_rev2(game)
+            if games_n_files[game][3] == "False" or ut_counter < int(games_n_files[game][3]):
+                os.startfile(game)
+            elif ut_counter >= int(games_n_files[game][3]):
+                delete_stuff_rev2(game)
+                ut_counter = 0
+        if games_n_files[game][3] != "False":
+            ut_counter += 1
+            
 
 main()

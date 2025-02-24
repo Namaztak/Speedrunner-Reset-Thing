@@ -10,18 +10,21 @@
 
 # What is this for?
 
-For now, just a simple python script for speedrunners playing games that need their saves deleted between runs, that asks the following:
-1. What game are you running? (Locate the exe)
-2. Where are the saves located? (Navigate to, and select their folder)
-3. Are there any files in that folder that need to be ignored? (Things like config files or any practice saves that you don't want it to delete when you reset/close the game)
+For now, just a simple python script for speedrunners playing games that need their saves deleted between runs, that asks the following:  
+1. What game are you running? (Locate the exe)  
+2. Where are the saves located? (Navigate to, and select their folder)  
+3. Are there any files in that folder that need to be ignored? (Things like config files or any practice saves that you don't want it to delete when you reset/close the game)  
+4. Does your run include any intentional crashes/exits?  
+ * If yes, how many?
 
 Make sure you have that game's cloud saves turned off in Steam (or whatever other launcher it uses, if it does at all) if you didn't already, otherwise this thing is just gonna make it so Steam has to redownload your most recent cloud save every time, and effectively do nothing.
 
-After all 3 of those steps are complete, it will check every second for whether the game is running, and do nothing but ~~spam up the terminal~~ until it is. Hey, no more terminal spam, I use Halo spinners instead now!
+After all 4 of those steps are complete, it will check every second for whether the game is running, and do nothing but ~~spam up the terminal~~ until it is. Hey, no more terminal spam, I use Halo spinners instead now!
 
 Once the game is running, it'll recheck every second to see that it's still running, and continue to do nothing but ~~spam "game is still running"~~ show a Halo spinner in the console.
 
 Once the game is no longer detected, it will immediately delete every file in the given folder, except any files submitted in step 3. 
+* If it's an "Undertale Mode" game, it will just relaunch the game and increment an internal counter, and will not delete the files until you've exited the game enough times that your run should be over.
 
 Finally, it will ask if you're doing another run. If yes, it'll immediately re-launch the exe you chose in step 1. If no, it'll ask if you want to restore the saves it quietly backed up when you first set up the config for that game. If yes, it does that, and if no, it'll just exit.
 
@@ -31,6 +34,11 @@ If you have at least one game set up, it'll ask you on launch whether you wanna 
 If you say no, it'll be a lot less aggressive.  
 
 TLDR: FLOOR IT TURNS ALT+F4 INTO A RESET BUTTON!
+
+# Undertale mode
+During setup of a new game, you're asked if your run has any intentional crashes/exits.  
+If you say yes, it'll ask how many times it should expect the game to have closed within 1 run.  
+It will not delete the save files until you've closed the game one more time than that number, at which point, it'll either ask if you wanna do another run, resetting that internal crash/exit counter, or it will just autodelete everything and relaunch the game if you enabled "FLOOR IT" when you launched the program.
 
 ## TO DO: 
 
@@ -57,6 +65,7 @@ TLDR: FLOOR IT TURNS ALT+F4 INTO A RESET BUTTON!
 8a. Insult them if not (but disable any LiveSplit functionality)  
 8b. If yes, have them locate and assign their splits file for that game, so that can also be launched by this script.  
 8c. MAYBE either figure out how to do the clean websocket interaction, or do an ungabunga pyautogui thing for timer resets.  
+9. Prevent users from putting system32 as the save path. (Because ["BITCH ARE YOU FOR REAL???"](https://www.youtube.com/watch?v=PB3EmjYFQUo))
 
 ## Dependencies not included with Python
 Again, init.bat should grab these for you, but in case you wanna look further into what I used for this, here you go:
