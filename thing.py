@@ -16,7 +16,7 @@ import webbrowser
 
 games_n_files = {}
 floor_it = False
-ut_counter = 0
+ut_counter = 1
 
 # Floor it? (automatically confirm everything for this session)
 import tkinter as tk
@@ -38,7 +38,7 @@ def get_undertale_mode():
         root.withdraw()  # Hide the root window
         undertale = simpledialog.askinteger("Input", "Enter a number")
         return str(undertale)
-    return "False"
+    return "-1"
         
         
 
@@ -217,6 +217,9 @@ def restore_saves(game):
 def is_running():
     with Halo(text="Checking every second for games you've set up", spinner = "shark", text_color='magenta') as spinner:
         running = False
+        if len(games_n_files.keys()) == 1:
+            game = list(games_n_files.keys())[0]
+            return game
         while running == False:
             time.sleep(1)
             progs = psutil.process_iter()
@@ -253,7 +256,7 @@ def is_not_running(game):
     global ut_counter
     with Halo(text=f"Checking every second to see if {game.strip('.exe')} is still running", spinner = "shark", text_color='magenta') as spinner:
         running = True
-        while running == True:
+        while running == True:            
             time.sleep(1)
             progs = psutil.process_iter()
             for prog in progs:
@@ -264,7 +267,7 @@ def is_not_running(game):
                     pass
             else:
                 running = False
-                if games_n_files[game][3] != "False" and ut_counter < int(games_n_files[game][3]):
+                if games_n_files[game][3] != "-1" and ut_counter < int(games_n_files[game][3]):
                     spinner.fail(f"{game.strip('.exe')} no longer running. {int(games_n_files[game][3]) - ut_counter} exits remaining in the run. Relaunching {game.strip('.exe')}. You're doing great!")
                 else:
                     spinner.fail(f"{game.strip('.exe')} no longer running. Deleting saves. Get back in it!")
@@ -283,26 +286,32 @@ def main():
         if answer == False:
             add_to_config()
     get_games()
-    game = is_running()
+    if len(games_n_files.keys()) == 1:
+        game = list(games_n_files.keys())[0]
+        os.chdir(games_n_files[game][2].strip(f"{game}"))
+        os.startfile(game)
+    else:
+        game = is_running()
     os.chdir(games_n_files[game][2].strip(f"{game}"))
     print(f"Now working in {games_n_files[game][2].strip(f"{game}")}")
     while True:
         is_not_running(game)
         if floor_it:
-            if games_n_files[game][3] == "False" or ut_counter < int(games_n_files[game][3]):
-                delete_stuff_floored(game)
-            elif ut_counter >= int(games_n_files[game][3]):
+            if ut_counter < int(games_n_files[game][3]) and games_n_files[game][3] != "-1":
+                os.startfile(game)
+            elif ut_counter >= int(games_n_files[game][3]) or games_n_files[game][3] == "-1":
                 delete_stuff_floored(game)
                 ut_counter = 0
+            
         
             
         else:
-            if games_n_files[game][3] == "False" or ut_counter < int(games_n_files[game][3]):
+            if ut_counter < int(games_n_files[game][3]) and games_n_files[game][3] != "-1":
                 os.startfile(game)
-            elif ut_counter >= int(games_n_files[game][3]):
+            elif ut_counter >= int(games_n_files[game][3]) and games_n_files[game][3] != "-1":
                 delete_stuff_rev2(game)
                 ut_counter = 0
-        if games_n_files[game][3] != "False":
+        if games_n_files[game][3] != "-1":
             ut_counter += 1
             
 

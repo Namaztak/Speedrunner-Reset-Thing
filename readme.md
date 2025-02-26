@@ -55,9 +55,9 @@ It will not delete the save files until you've closed the game one more time tha
 3b. ~~Fix initial run after adding a profile, currently does not detect the new game until the script starts over.~~  
 3c. ~~Make it ignore subfolders in the save directory~~  
 3d. Make it check for additional files repeatedly until none are selected, run the same permissions check on each folder/files. (really low priority, might not even do this unless someone shows me a specific game that'd need it)  
-4. Make an "Undertale mode" for any games that involve an intentional crash/quit during a run.  
-4a. Ask when setting up a game if there are any intentional crashes/exits in a normal run.  
-4b. If yes, ask how many, assign that to a variable, increment counter per-exit, auto-relaunch like "floor it", stop when counter > exits.  
+4. ~~Make an "Undertale mode" for any games that involve an intentional crash/quit during a run.~~  
+4a. ~~Ask when setting up a game if there are any intentional crashes/exits in a normal run.  ~~
+4b. ~~If yes, ask how many, assign that to a variable, increment counter per-exit, auto-relaunch like "floor it", stop when counter > exits.~~  
 5. "Emulator mode" to allow a single program to be set up for multiple games' saves.  
 6. ~~"Floor it!" mode. (Only initial interaction needed, then automate everything to yes cause we're grinding runs like crazy.)~~  
 7. Make a video showing what it should look like in practice.  
@@ -65,7 +65,9 @@ It will not delete the save files until you've closed the game one more time tha
 8a. Insult them if not (but disable any LiveSplit functionality)  
 8b. If yes, have them locate and assign their splits file for that game, so that can also be launched by this script.  
 8c. MAYBE either figure out how to do the clean websocket interaction, or do an ungabunga pyautogui thing for timer resets.  
-9. Prevent users from putting system32 as the save path. (Because ["BITCH ARE YOU FOR REAL???"](https://www.youtube.com/watch?v=PB3EmjYFQUo))
+9. Prevent users from putting system32 as the save path. (Because ["BITCH ARE YOU FOR REAL???"](https://www.youtube.com/watch?v=PB3EmjYFQUo))  
+10. Support switching games from one run to another without having to re-launch the script.  
+11. ~~If the user has only one game set up, and they choose to floor it, or run a game they've already set up, just launch that one.~~  
 
 ## Dependencies not included with Python
 Again, init.bat should grab these for you, but in case you wanna look further into what I used for this, here you go:
