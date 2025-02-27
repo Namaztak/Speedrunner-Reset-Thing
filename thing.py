@@ -3,7 +3,7 @@ import psutil
 import time
 import tkinter as tk
 from tkinter import filedialog
-from tkinter import ttk
+from tkinter import messagebox
 from tkinter import simpledialog
 import random # For random messages to not be boring about the console spam
 import configparser
@@ -18,12 +18,6 @@ games_n_files = {}
 floor_it = False
 ut_counter = 1
 
-# Floor it? (automatically confirm everything for this session)
-import tkinter as tk
-
-root = tk.Tk()
-root.withdraw()  # Hide the main window
-
 # Ask user if their run contains any intentional crashes/quits
 def get_undertale_mode():
     answer = floor_it(
@@ -36,17 +30,72 @@ def get_undertale_mode():
         #open tkinter dialogue with a number input field
         root = tk.Tk()
         root.withdraw()  # Hide the root window
-        undertale = simpledialog.askinteger("Input", "Enter a number")
+        undertale = simpledialog.askinteger("Input", "Enter the expected number of exits/crashes in one run:")
+        root.destroy()
         return str(undertale)
     return "-1"
+
+# Use for timed yes/no confirmations
+def timed_yes_no(title, message, timeout=10, default_yes=True):
+    root = tk.Tk()
+    root.withdraw()
+    root.attributes("-topmost", True)
+
+    dialog = tk.Toplevel(root)
+    dialog.title(title)
+    dialog.focus_set()  # Set focus to the dialog box
+    dialog.attributes("-topmost", True)  # Set dialog box to be topmost
+    dialog.lift()
+
+    label = tk.Label(dialog, text=message)
+    label.pack(pady=10)
+
+    var = tk.BooleanVar()
+    var.set(default_yes)
+
+    yes_button = tk.Button(dialog, text="Yes", command=lambda: [var.set(True), dialog.destroy()])
+    yes_button.pack(side=tk.LEFT, padx=10)
+
+    no_button = tk.Button(dialog, text="No", command=lambda: [var.set(False), dialog.destroy()])
+    no_button.pack(side=tk.LEFT, padx=10)
+
+    def close_dialog():
+        dialog.destroy()
+        root.destroy()
+    def timeout_callback():
+        close_dialog()
+        return var.get()
+
+    dialog.after(timeout * 1000, timeout_callback)
+    dialog.update_idletasks()
+    dialog.geometry("+%d+%d" % ((dialog.winfo_screenwidth() - dialog.winfo_reqwidth()) / 2,
+                                (dialog.winfo_screenheight() - dialog.winfo_reqheight()) / 2))
+    dialog.protocol("WM_DELETE_WINDOW", close_dialog)
+    dialog.wait_window()
+    return var.get()
+
         
-        
+#function to check if an undertale mode run is still going after an exit is detected
+def undertale_confirm_ongoing(time):
+    return timed_yes_no(
+        "Run still going?",
+        f"That was an intentional exit, yeah? Run still going? (This'll default to yes if you ignore it for {time} seconds)",
+        timeout=time,
+        default_yes=True
+        )
+    
+
 
 def floor_it(title, message, yes_label="Yes", no_label="No"):
-    global floor_it
+    root = tk.Tk()
+    root.withdraw()
+    root.attributes("-topmost", True)
     result = [None]
     dialog = tk.Toplevel()
     dialog.title(title)
+    dialog.focus_set()
+    dialog.attributes("-topmost", True)
+    dialog.lift()
 
     def yes():
         result[0] = True
@@ -78,8 +127,8 @@ def floor_it(title, message, yes_label="Yes", no_label="No"):
                                 (dialog.winfo_screenheight() - dialog.winfo_reqheight()) / 2))
 
     dialog.wait_window()
-    floor_it = result[0]
-    return result[0]
+    result = result[0]
+    return result
 
 def delete_stuff_floored(game):
     save_path = games_n_files[game][0]
@@ -88,7 +137,7 @@ def delete_stuff_floored(game):
         if file not in keep_files and not os.path.isdir(os.path.join(save_path, file)):
             file_path = os.path.join(save_path, file)
             os.remove(file_path)
-    print(f"GET BACK AT IT! {game.strip('.exe').upper()} COMING RIGHT BACK UP! {random.choice(floor_it_quotes).upper()}")
+    print(f"GET BACK AT IT! {game[:-4].upper()} COMING RIGHT BACK UP! {random.choice(floor_it_quotes).upper()}")
     os.startfile(game)
     
 
@@ -165,7 +214,7 @@ def add_to_config():
         config.write(configfile)
 
     # Zip the current contents of the save folder and save it in this script's directory
-    zip_name = game_exe.strip(".exe") + "_backup"
+    zip_name = game_exe[:-4] + "_backup"
     #copy contents of save folder to current directory
     shutil.copytree(save_path, zip_name, dirs_exist_ok=True)
     print("Just in case, I backed up your existing saves to a folder in this script's directory. If you want to restore them, they're in here now.")
@@ -192,7 +241,7 @@ def delete_stuff_rev2(game):
     if answer == True:
         core_deletion(game)
         # relaunch the game
-        print(f"Relaunching {game.strip('.exe')}. GLHF!")
+        print(f"Relaunching {game[:-4]}. GLHF!")
         os.startfile(game)
         root.destroy()
     else:
@@ -210,7 +259,7 @@ def delete_stuff_rev2(game):
 # Function to put the original saves back in the save folder
 def restore_saves(game):
     save_path = games_n_files[game][0]
-    backup_path = game.strip(".exe") + "_backup"
+    backup_path = game[:-4] + "_backup"
     shutil.copytree(backup_path, save_path, dirs_exist_ok=True)
 
 # Check every second to see if game is running, game is a string, pulled from config file
@@ -230,7 +279,7 @@ def is_running():
                         game = prog.name()
                 except psutil.NoSuchProcess:
                     pass  # skip terminated processes
-        spinner.succeed(f"{game.strip(".exe")} detected, have fun!")
+        spinner.succeed(f"{game[:-4]} detected, have fun!")
         return game
 
 # Get games that are already set up in games.cfg
@@ -268,12 +317,12 @@ def is_not_running(game):
             else:
                 running = False
                 if games_n_files[game][3] != "-1" and ut_counter < int(games_n_files[game][3]):
-                    spinner.fail(f"{game.strip('.exe')} no longer running. {int(games_n_files[game][3]) - ut_counter} exits remaining in the run. Relaunching {game.strip('.exe')}. You're doing great!")
+                    spinner.fail(f"{game.strip('.exe')} no longer running. {'Full reset, pitter patter.' if ut_counter == 0 or int(games_n_files[game][3] == -1) else f'{int(games_n_files[game][3]) - ut_counter} exits remaining in the run'}. Relaunching {game.strip('.exe')}. You're doing great!")
                 else:
                     spinner.fail(f"{game.strip('.exe')} no longer running. Deleting saves. Get back in it!")
 # Main function
 def main():
-    global ut_counter
+    global ut_counter, floor_it
     config = configparser.ConfigParser()
     config.read('games.cfg')
     # Check if games.cfg exists, or if it's empty
@@ -281,7 +330,8 @@ def main():
         print("First time? Let's create a config file")
         add_to_config()
 
-    if not floor_it("Floor it?", "FLOOR IT???", yes_label="FLOOR IT!", no_label="NO, DON'T FLOOR IT!"):
+    floor_it = floor_it("Floor it?", "FLOOR IT???", yes_label="FLOOR IT!", no_label="NO, DON'T FLOOR IT!")
+    if not floor_it:
         answer = tk.messagebox.askyesno("New game?","Have you already set up the game you'll be running?")
         if answer == False:
             add_to_config()
@@ -297,22 +347,41 @@ def main():
     while True:
         is_not_running(game)
         if floor_it:
-            if ut_counter < int(games_n_files[game][3]) and games_n_files[game][3] != "-1":
+            if games_n_files[game][3] == "-1" or ut_counter >= int(games_n_files[game][3]):
+                ut_still_going = False
+            else:
+                ut_still_going = undertale_confirm_ongoing(3)
+            if ut_still_going == False:
+                if ut_counter >= int(games_n_files[game][3]):
+                    if games_n_files[game][3] != "-1":
+                        print("Your did it! Gold star. And hopefully some gold splits. Saves deleted, go next.".upper())
+                    delete_stuff_floored(game)
+                    ut_counter = 0
+                else:
+                    if games_n_files[game][3] != "-1":
+                        print("Mission failed. We'll get 'em next time. Saves deleted, go next.".upper())
+                    delete_stuff_floored(game)
+                    ut_counter = 0
+            elif ut_still_going == True or ut_counter == 0:
                 os.startfile(game)
-            elif ut_counter >= int(games_n_files[game][3]) or games_n_files[game][3] == "-1":
-                delete_stuff_floored(game)
-                ut_counter = 0
-            
-        
-            
+                ut_counter += 1
+                        
         else:
-            if ut_counter < int(games_n_files[game][3]) and games_n_files[game][3] != "-1":
-                os.startfile(game)
-            elif ut_counter >= int(games_n_files[game][3]) and games_n_files[game][3] != "-1":
+            if games_n_files[game][3] == "-1" or ut_counter >= int(games_n_files[game][3]):
+                ut_still_going = False
+            elif ut_counter < int(games_n_files[game][3]):
+                ut_still_going = undertale_confirm_ongoing(10)
+            if ut_still_going == False:               
+                if games_n_files[game][3] != "-1" and ut_counter >= int(games_n_files[game][3]):
+                    print("Your did it! Gold star. And hopefully some gold splits.")
+                elif games_n_files[game][3] != "-1":
+                    print("Mission failed. We'll get 'em next time. Saves deleted, go next.")
                 delete_stuff_rev2(game)
                 ut_counter = 0
-        if games_n_files[game][3] != "-1":
-            ut_counter += 1
+            else:
+                print("Ayy, nice. You made it past whatever that exit marks. Keep at it!")
+                os.startfile(game)
+                ut_counter += 1
             
 
 main()

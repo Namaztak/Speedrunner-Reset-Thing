@@ -1,16 +1,16 @@
 # How to run:
 
-0. Have Python installed such that you can do "python --version" in your terminal/command line interface of choice, and actually get a version returned to you. My machine uses Python 3.13, and so does my only QA tester so far. It works on both of our machines.  
+0. Have Python installed such that you can do "python --version" in your terminal/command line interface of choice, and actually get a version returned to you. My machine uses Python 3.13, and so does my only QA tester so far. It works on both of our machines.
 
 1. Go up top, hit that green code dropdown, hit download zip, and extract that zip to its own folder somewhere you won't forget.  
 2. Run init.bat and it should grab everything it needs automatically.  
 3. See next section, as it should then run the main script. You can just run init.bat every time, if you don't feel like running it from the command line.  
 
-### Note: I've only tested this on Windows 10/11, so if you're on Linux/Mac, best of luck to you I guess. I don't use those, and I'm not super interested in supporting them specifically.
+### Note: I've only tested this on Windows 10/11, so if you're on Linux/Mac, I'd be amazed if it works at all, let alone correctly. I will not be supporting either one, myself. Someone(s) else can feel free to fork this for those if they want to. If you do, I'd appreciate it if you linked back here for credit.
 
 # What is this for?
 
-For now, just a simple python script for speedrunners playing games that need their saves deleted between runs, that asks the following:  
+For now, it's just a python script for speedrunners that run games which need their saves deleted between runs, to save on menuing, that asks the following:  
 1. What game are you running? (Locate the exe)  
 2. Where are the saves located? (Navigate to, and select their folder)  
 3. Are there any files in that folder that need to be ignored? (Things like config files or any practice saves that you don't want it to delete when you reset/close the game)  
@@ -19,12 +19,14 @@ For now, just a simple python script for speedrunners playing games that need th
 
 Make sure you have that game's cloud saves turned off in Steam (or whatever other launcher it uses, if it does at all) if you didn't already, otherwise this thing is just gonna make it so Steam has to redownload your most recent cloud save every time, and effectively do nothing.
 
-After all 4 of those steps are complete, it will check every second for whether the game is running, and do nothing but ~~spam up the terminal~~ until it is. Hey, no more terminal spam, I use Halo spinners instead now!
+After all 4 of those steps are complete, it will check every second for whether one of your speedgames is running, and do nothing but ~~spam up the terminal~~ until it is. Hey, no more terminal spam, I use Halo spinners instead now!
+
+* If you only have one game set up, it'll launch that game immediately and start the rest of the loop.
 
 Once the game is running, it'll recheck every second to see that it's still running, and continue to do nothing but ~~spam "game is still running"~~ show a Halo spinner in the console.
 
-Once the game is no longer detected, it will immediately delete every file in the given folder, except any files submitted in step 3. 
-* If it's an "Undertale Mode" game, it will just relaunch the game and increment an internal counter, and will not delete the files until you've exited the game enough times that your run should be over.
+Once the game is no longer detected, it will immediately delete every file in the given save folder, except any files submitted in step 3. 
+* If it's an "Undertale Mode" game, it will just relaunch the game and increment an internal counter, and will not delete the files until you've exited the game enough times that your run should be over. I plan to add a confirmation box that your run is still ongoing, that won't necessarily need any actual input if the run is still in progress. It'll default to yes for that.
 
 Finally, it will ask if you're doing another run. If yes, it'll immediately re-launch the exe you chose in step 1. If no, it'll ask if you want to restore the saves it quietly backed up when you first set up the config for that game. If yes, it does that, and if no, it'll just exit.
 
@@ -33,7 +35,7 @@ If you have at least one game set up, it'll ask you on launch whether you wanna 
 
 If you say no, it'll be a lot less aggressive.  
 
-TLDR: FLOOR IT TURNS ALT+F4 INTO A RESET BUTTON!
+TLDR: "FLOOR IT" TURNS ALT+F4 INTO A RESET BUTTON!
 
 # Undertale mode
 During setup of a new game, you're asked if your run has any intentional crashes/exits.  
@@ -57,7 +59,8 @@ It will not delete the save files until you've closed the game one more time tha
 3d. Make it check for additional files repeatedly until none are selected, run the same permissions check on each folder/files. (really low priority, might not even do this unless someone shows me a specific game that'd need it)  
 4. ~~Make an "Undertale mode" for any games that involve an intentional crash/quit during a run.~~  
 4a. ~~Ask when setting up a game if there are any intentional crashes/exits in a normal run.  ~~
-4b. ~~If yes, ask how many, assign that to a variable, increment counter per-exit, auto-relaunch like "floor it", stop when counter > exits.~~  
+4b. ~~If yes, ask how many, assign that to a variable, increment counter per-exit, auto-relaunch like "floor it", stop when counter >= exits.~~  
+4c. ~~Add confirmation on each exit as to whether the run is still going.~~
 5. "Emulator mode" to allow a single program to be set up for multiple games' saves.  
 6. ~~"Floor it!" mode. (Only initial interaction needed, then automate everything to yes cause we're grinding runs like crazy.)~~  
 7. Make a video showing what it should look like in practice.  
@@ -65,9 +68,11 @@ It will not delete the save files until you've closed the game one more time tha
 8a. Insult them if not (but disable any LiveSplit functionality)  
 8b. If yes, have them locate and assign their splits file for that game, so that can also be launched by this script.  
 8c. MAYBE either figure out how to do the clean websocket interaction, or do an ungabunga pyautogui thing for timer resets.  
+8d. Support multiple categories for single games?
 9. Prevent users from putting system32 as the save path. (Because ["BITCH ARE YOU FOR REAL???"](https://www.youtube.com/watch?v=PB3EmjYFQUo))  
-10. Support switching games from one run to another without having to re-launch the script.  
+10. Support switching games from one run to another without having to re-launch the script.  (low priority, relaunching the script is not that hard.)
 11. ~~If the user has only one game set up, and they choose to floor it, or run a game they've already set up, just launch that one.~~  
+11a. If 8d gets implemented, have them pick their category for the session.  
 
 ## Dependencies not included with Python
 Again, init.bat should grab these for you, but in case you wanna look further into what I used for this, here you go:
