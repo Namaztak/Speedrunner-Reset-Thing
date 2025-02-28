@@ -19,7 +19,7 @@ For now, it's just a python script for speedrunners that run games which need th
 
 Make sure you have that game's cloud saves turned off in Steam (or whatever other launcher it uses, if it does at all) if you didn't already, otherwise this thing is just gonna make it so Steam has to redownload your most recent cloud save every time, and effectively do nothing.
 
-After all 4 of those steps are complete, it will check every second for whether one of your speedgames is running, and do nothing but ~~spam up the terminal~~ until it is. Hey, no more terminal spam, I use Halo spinners instead now!
+After all 4 of those steps are complete, it will check every second for whether one of your speedgames is running, and do nothing ~~but spam up the terminal~~ until it is. Hey, no more terminal spam, I use Halo spinners instead now!
 
 * If you only have one game set up, it'll launch that game immediately and start the rest of the loop.
 
@@ -42,7 +42,7 @@ During setup of a new game, you're asked if your run has any intentional crashes
 If you say yes, it'll ask how many times it should expect the game to have closed within 1 run.  
 It will not delete the save files until you've closed the game one more time than that number, at which point, it'll either ask if you wanna do another run, resetting that internal crash/exit counter, or it will just autodelete everything and relaunch the game if you enabled "FLOOR IT" when you launched the program.
 
-## TO DO: 
+## TO DO for now: 
 
 1. ~~Make it check that it actually can delete the files, and if not, tell the user to change the folder permissions.~~  
 1a. ~~Make it so empty selections in the first step do not add to config, and do not cause crashes.~~  
@@ -73,6 +73,11 @@ It will not delete the save files until you've closed the game one more time tha
 10. Support switching games from one run to another without having to re-launch the script.  (low priority, relaunching the script is not that hard.)
 11. ~~If the user has only one game set up, and they choose to floor it, or run a game they've already set up, just launch that one.~~  
 11a. If 8d gets implemented, have them pick their category for the session.  
+
+## TO DO for later when I actually know how to do it at all:  
+1. Make it able to trigger OBS overlays based on timer conditions.  
+2. Make it control LiveSplit via websocket.  
+3. 
 
 ## Dependencies not included with Python
 Again, init.bat should grab these for you, but in case you wanna look further into what I used for this, here you go:

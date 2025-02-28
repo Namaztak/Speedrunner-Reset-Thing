@@ -383,5 +383,5 @@ def main():
                 os.startfile(game)
                 ut_counter += 1
             
-
-main()
+if __name__ == "__main__":
+    main()
