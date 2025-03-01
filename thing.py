@@ -84,7 +84,9 @@ def undertale_confirm_ongoing(time):
         default_yes=True
         )
     
-
+#Emulator mode functions
+#def get_emu():
+    #pass
 
 def floor_it(title, message, yes_label="Yes", no_label="No"):
     root = tk.Tk()
