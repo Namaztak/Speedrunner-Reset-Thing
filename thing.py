@@ -84,9 +84,36 @@ def undertale_confirm_ongoing(time):
         default_yes=True
         )
     
-#Emulator mode functions
-#def get_emu():
-    #pass
+# Emulator mode functions
+def get_emu():
+    answer = tk.messagebox.askyesno("Emulator mode?", "Is the exe you just selected an emulator?")
+    if answer == True:
+        return "True"
+    return "False"
+
+def multi_cat_setup():
+    if ask_mult_cats():
+        all_cats = []
+        more = True
+        while more:
+            all_cats.append(get_split_file())
+            more = simpledialog.askyesno("More categories?", "Do you want to add another category?")
+        return all_cats
+    return False
+
+def ask_mult_cats():
+    answer = simpledialog.askyesno("Multiple categories?", "Do you wanna set this up to run multiple categories?")
+    return answer
+
+def get_split_file():
+    print("Select your splits file for this category")
+    location = filedialog.askopenfilename()
+    actual_file = os.path.basename(location)
+    #ask for the user to input a string using tkinter dialogue
+    category = simpledialog.askstring("Input", "Enter the category name:")
+    return [location, actual_file, category]
+
+
 
 def floor_it(title, message, yes_label="Yes", no_label="No"):
     root = tk.Tk()
@@ -130,6 +157,7 @@ def floor_it(title, message, yes_label="Yes", no_label="No"):
 
     dialog.wait_window()
     result = result[0]
+    root.destroy()
     return result
 
 def delete_stuff_floored(game):
@@ -200,6 +228,9 @@ def add_to_config():
     save_path = get_save_path()
     keep_files = add_keep_files_to_dict()
     undertale = get_undertale_mode()
+    emu = get_emu()
+    #emu_rom = get_emu_rom()
+    #categories = str(get_categories())
 
     # create a new section in the config file for the game
     if not config.has_section(game_exe):
@@ -210,12 +241,15 @@ def add_to_config():
     config.set(game_exe, 'game_path', game_path)
     config.set(game_exe, 'keep_files', ','.join(keep_files))  # store as comma-separated list
     config.set(game_exe, 'ut_mode', undertale)
-
+    config.set(game_exe, 'emu', emu)
+    #config.set(game_exe, 'emu_rom', emu_rom) # store a list for a dropdown of games when emu detected
+    #config.set(game_exe, 'categories', categories) #store list of speedrun categories, if more than one
+    #config.set(game_exe, 'splits', splits) # store list of splits files, assigned to categories
     # write the changes to the config file
     with open('games.cfg', 'w') as configfile:
         config.write(configfile)
 
-    # Zip the current contents of the save folder and save it in this script's directory
+    # Copy the save folder's contents to a backup folder
     zip_name = game_exe[:-4] + "_backup"
     #copy contents of save folder to current directory
     shutil.copytree(save_path, zip_name, dirs_exist_ok=True)
