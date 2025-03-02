@@ -15,15 +15,16 @@ For now, it's just a python script for speedrunners that run games which need th
 2. Where are the saves located? (Navigate to, and select their folder)  
 3. Are there any files in that folder that need to be ignored? (Things like config files or any practice saves that you don't want it to delete when you reset/close the game)  
 4. Does your run include any intentional crashes/exits?  
- * If yes, how many?
+ * If yes, how many?  
+5. Locate your splits file for this game. (It currently only supports one category for each game.)
 
 Make sure you have that game's cloud saves turned off in Steam (or whatever other launcher it uses, if it does at all) if you didn't already, otherwise this thing is just gonna make it so Steam has to redownload your most recent cloud save every time, and effectively do nothing.
 
-After all 4 of those steps are complete, it will check every second for whether one of your speedgames is running, and do nothing ~~but spam up the terminal~~ until it is. Hey, no more terminal spam, I use Halo spinners instead now!
+After all 5 of those steps are complete, it will check every second for whether one of your speedgames is running, and do nothing ~~but spam up the terminal~~ until it is. Hey, no more terminal spam, I use Halo spinners instead now!
 
-* If you only have one game set up, it'll launch that game immediately and start the rest of the loop.
+* If you only have one game set up, it'll launch that game immediately, as well as open your splits, then start the rest of the loop.
 
-Once the game is running, it'll recheck every second to see that it's still running, and continue to do nothing but ~~spam "game is still running"~~ show a Halo spinner in the console.
+Once the game is running, if you did it manually, having set up more than one game, it'll launch your splits file directly, then the main loop: it'll recheck every second to see that it's still running, and continue to do nothing but ~~spam "game is still running"~~ show a Halo spinner in the console.
 
 Once the game is no longer detected, it will immediately delete every file in the given save folder, except any files submitted in step 3. 
 * If it's an "Undertale Mode" game, it will just relaunch the game and increment an internal counter, and will not delete the files until you've exited the game enough times that your run should be over. I plan to add a confirmation box that your run is still ongoing, that won't necessarily need any actual input if the run is still in progress. It'll default to yes for that.
@@ -64,8 +65,9 @@ It will not delete the save files until you've closed the game one more time tha
 5. "Emulator mode" to allow a single program to be set up for multiple games' saves.  
 6. ~~"Floor it!" mode. (Only initial interaction needed, then automate everything to yes cause we're grinding runs like crazy.)~~  
 7. Make a video showing what it should look like in practice.  
-8. Add check on first run to see if the user uses LiveSplit.  
-8a. Insult them if not (but disable any LiveSplit functionality)  
+8. ~~Add check on first run to see if the user uses LiveSplit.~~  
+8a. ~~Insult them if not (but disable any LiveSplit functionality)~~  
+8 and 8a got rolled into a single check during initial setup of a game that asks for the splits file, and it just launches that file directly.
 8b. If yes, have them locate and assign their splits file for that game, so that can also be launched by this script.  
 8c. MAYBE either figure out how to do the clean websocket interaction, or do an ungabunga pyautogui thing for timer resets.  
 8d. Support multiple categories for single games?
@@ -77,7 +79,6 @@ It will not delete the save files until you've closed the game one more time tha
 ## TO DO for later when I actually know how to do it at all:  
 1. Make it able to trigger OBS overlays based on timer conditions.  
 2. Make it control LiveSplit via websocket.  
-3. 
 
 ## Dependencies not included with Python
 Again, init.bat should grab these for you, but in case you wanna look further into what I used for this, here you go:
