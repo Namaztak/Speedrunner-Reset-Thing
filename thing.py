@@ -217,6 +217,22 @@ def add_keep_files_to_dict():
         file = os.path.basename(file)
     return file_paths
 
+def get_splits():
+    #show a message box to the user
+    messagebox.showinfo("Splits", "Select your splits file for this category")
+    splits_path = filedialog.askopenfilename()
+    if splits_path == "":
+        messagebox.showinfo("No splits?", "You're not timing your runs? How'd you even get here? Run again when you're ready.")
+        exit()
+    print(f"Selected: {splits_path}")
+    return (rf"{splits_path}")
+
+def open_splits(splits_path, game_path):
+    os.chdir(os.path.dirname(splits_path))
+    os.startfile(os.path.basename(splits_path))
+    os.chdir(game_path)
+    return
+
 # Add both game exe and list of files to not delete to dictionary
 def add_to_config():
     config = configparser.ConfigParser()
@@ -229,8 +245,7 @@ def add_to_config():
     keep_files = add_keep_files_to_dict()
     undertale = get_undertale_mode()
     emu = get_emu()
-    #emu_rom = get_emu_rom()
-    #categories = str(get_categories())
+    splits = get_splits()
 
     # create a new section in the config file for the game
     if not config.has_section(game_exe):
@@ -242,9 +257,7 @@ def add_to_config():
     config.set(game_exe, 'keep_files', ','.join(keep_files))  # store as comma-separated list
     config.set(game_exe, 'ut_mode', undertale)
     config.set(game_exe, 'emu', emu)
-    #config.set(game_exe, 'emu_rom', emu_rom) # store a list for a dropdown of games when emu detected
-    #config.set(game_exe, 'categories', categories) #store list of speedrun categories, if more than one
-    #config.set(game_exe, 'splits', splits) # store list of splits files, assigned to categories
+    config.set(game_exe, 'splits', splits)
     # write the changes to the config file
     with open('games.cfg', 'w') as configfile:
         config.write(configfile)
@@ -327,11 +340,13 @@ def get_games():
         game_path = config.get(game, 'game_path')
         keep_files = config.get(game, 'keep_files').split(',')
         undertale = config.get(game, 'ut_mode') #undertale mode var
+        splits_path = config.get(game, 'splits')
         games_n_files[game] = [
             save_path,
             keep_files,
             game_path,
-            undertale
+            undertale,
+            splits_path
             ]
         check_perms(save_path)
 
@@ -380,6 +395,7 @@ def main():
         game = is_running()
     os.chdir(games_n_files[game][2].strip(f"{game}"))
     print(f"Now working in {games_n_files[game][2].strip(f"{game}")}")
+    open_splits(games_n_files[game][4], games_n_files[game][2].strip(f"{game}"))
     while True:
         is_not_running(game)
         if floor_it:
