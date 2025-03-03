@@ -10,6 +10,8 @@
 
 # What is this for?
 
+[See demo video here.](https://www.youtube.com/watch?v=A5Pf8dAfsA0)
+
 For now, it's just a python script for speedrunners that run games which need their saves deleted between runs, to save on menuing, that asks the following:  
 1. What game are you running? (Locate the exe)  
 2. Where are the saves located? (Navigate to, and select their folder)  
