@@ -244,7 +244,7 @@ def add_to_config():
     save_path = get_save_path()
     keep_files = add_keep_files_to_dict()
     undertale = get_undertale_mode()
-    emu = get_emu()
+    #emu = get_emu()
     splits = get_splits()
 
     # create a new section in the config file for the game
@@ -256,7 +256,7 @@ def add_to_config():
     config.set(game_exe, 'game_path', game_path)
     config.set(game_exe, 'keep_files', ','.join(keep_files))  # store as comma-separated list
     config.set(game_exe, 'ut_mode', undertale)
-    config.set(game_exe, 'emu', emu)
+    #config.set(game_exe, 'emu', emu)
     config.set(game_exe, 'splits', splits)
     # write the changes to the config file
     with open('games.cfg', 'w') as configfile:
