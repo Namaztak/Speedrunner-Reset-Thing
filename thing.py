@@ -20,7 +20,7 @@ ut_counter = 1
 
 # Ask user if their run contains any intentional crashes/quits
 def get_undertale_mode():
-    answer = floor_it(
+    answer = floor_it_func(
         "Undertale mode?", 
         "Do your runs of this game involve any intentional crashes or exits?",
         yes_label="Yes",
@@ -114,8 +114,8 @@ def get_split_file():
     return [location, actual_file, category]
 
 
-
-def floor_it(title, message, yes_label="Yes", no_label="No"):
+# used for custom yes/no questions
+def floor_it_func(title, message, yes_label="Yes", no_label="No"):
     root = tk.Tk()
     root.withdraw()
     root.attributes("-topmost", True)
@@ -381,7 +381,7 @@ def main():
         print("First time? Let's create a config file")
         add_to_config()
 
-    floor_it = floor_it("Floor it?", "FLOOR IT???", yes_label="FLOOR IT!", no_label="NO, DON'T FLOOR IT!")
+    floor_it = floor_it_func("Floor it?", "FLOOR IT???", yes_label="FLOOR IT!", no_label="NO, DON'T FLOOR IT!")
     if not floor_it:
         answer = tk.messagebox.askyesno("New game?","Have you already set up the game you'll be running?")
         if answer == False:
