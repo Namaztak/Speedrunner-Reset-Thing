@@ -17,6 +17,7 @@ import webbrowser
 games_n_files = {}
 floor_it = False
 ut_counter = 1
+thing_py_path = os.path.dirname(os.path.abspath(__file__))
 
 # Ask user if their run contains any intentional crashes/quits
 def get_undertale_mode():
@@ -308,7 +309,7 @@ def delete_stuff_rev2(game):
 # Function to put the original saves back in the save folder
 def restore_saves(game):
     save_path = games_n_files[game][0]
-    backup_path = game[:-4] + "_backup"
+    backup_path = thing_py_path + "/" + game[:-4] + "_backup"
     shutil.copytree(backup_path, save_path, dirs_exist_ok=True)
 
 # Check every second to see if game is running, game is a string, pulled from config file
