@@ -1,5 +1,5 @@
 games.cfg
 *_backup
 test.py
-__pycache__
+*pycache*
 .venv
